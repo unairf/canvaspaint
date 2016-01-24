@@ -38,249 +38,162 @@
 }
 </style>
 <script>
-var lienzo;
+var canvas;
 var ctx;
-var anchoLienzo=1200;
-var altoLienzo=700;
-var mx=0;//Velocidad izquierda-derecha
-var my=0;//Velocidad arriba-abajo
-var cuadroxx=new Array();
-var cuadroyy=new Array();
-var intervalo;
-var cua=10;//Frecuencia de cuadros en la estela por segundo
-contador=0;
-tot=50;//Cantidad de cuadros en la estela
-var arrayX = new Array();
-var arrayY = new Array();
-var seguir = 1;
-var reglaX = 30;
-var reglaY = 30;
-var reglaAncho = 300;
-var reglaAlto = 50;
-var cuadradoX = 20;
-var cuadradoY = 20;
-var cuadradoAlto = 30;
-var cuadradoAncho = 10;
-var arrastrando = "false";
-var moverCuadrado = "false";
-var ratonX = 0;
-var ratonY = 0;
-var anchuraBordesRectangulo = 300;
-var lineaElegidaX = 0;
-var lineaElegidaY = 0;
-var lineaElegidaAncho = 0;
-var lineaElegidaAlto = 0;
-var verdeX = 0;
-var verdeY = 0;
-window.onload = function(){  
-	lienzo = document.getElementById("zona");   
-	lienzo.width=anchoLienzo;
-	lienzo.height=altoLienzo;
-	ctx = lienzo.getContext("2d"); 
-        prepararCanvas();
-        primerCuadrado();
-        
-        
-        function getMousePos(canvas, evt) {
-    var rect = canvas.getBoundingClientRect(), root = document.documentElement;
+var CANVAS_ANCHURA = 1200;
+var CANVAS_ALTURA = 700;
+var sliderRojoY = 50;
+var sliderAzulY = 90;
+var sliderVerdeY = 130;
+var slidersAnchura = 200;
+var slidersAltura = 5;
+var slidersPosicionX = 50;
+var rectanguloReglaRojoX = 0;
+var rectanguloReglaRojoY = 0;
+var rectanguloReglaAzulX = 0;
+var rectanguloReglaAzulY = 0;
+var rectanguloReglaVerdeX = 0;
+var rectanguloReglaVerdeY = 0;
+var rectangulosReglaAnchura = 10;
+var rectangulosReglaAltura = 30;
+var colorRojo = 100;
+var colorVerde = 0;
+var colorAzul = 0;
+var cuadradoPrevisualizarColorX = 300;
+var cuadradoPrevisualizarColorY = 30;
+var cuadradoPrevisualizarColorAnchura = 50;
+var cuadradoPrevisualizarColorAltura = 50;
+var lblPosicionX = 980;
+var lblPosicionXY = 300;
+var lblPosicionYY = 400;
+var lblRojoX = 0;
+var lblRojoY = 0;
+var lblAzulX = 0;
+var lblAzulY = 0;
+var lblVerdeX = 0;
+var lblVerdeY = 0;
+var clicRojo = 0;
+var clicAzul = 0;
+var clicVerde = 0;
 
-    // return relative mouse position
-    var mouseX = evt.clientX - rect.left - root.scrollLeft;
-    var mouseY = evt.clientY - rect.top - root.scrollTop;
-    return {
-      x: mouseX,
-      y: mouseY
-    };
-  }
-        
-        function primerCuadrado() {
-            //Dibujar el cuadrado que mostrará dónde se encuentra en el slide bar
-        cuadradoX = reglaX;
-        cuadradoY = reglaY;
-        ctx.beginPath();
-            
-        ctx.fillStyle="#BAB8B8";
-        ctx.fillRect(reglaX, reglaY + 100  - cuadradoAlto /4,10,30);
-        }
-	
-	function dibujarLinea(x,y,x2,y2){
-                ctx.beginPath();
-                ctx.moveTo(x,y);
-                ctx.lineTo(x2,y2);
-                ctx.stroke();
-}
-    function mostrarPosicion(texto) {
-        numero = parseInt(texto);
-        ctx.fillStyle = "blue";
-                ctx.font = "bold 20px Arial";
-                ctx.fillText("Anchura del rectángulo: " + numero + "px", 300,300);
-    }
-	
-        function dibujarCuadradoMoviendo(posicionX) {
-            if((moverCuadrado="true") && (arrastrando="true")){
-               ctx.clearRect(0, 0, lienzo.width, lienzo.height);
-            prepararCanvas();
-            ctx.beginPath();
-        ctx.fillStyle="#BAB8B8";
-        ctx.fillRect(posicionX, reglaY + 100  - cuadradoAlto /4,cuadradoAncho,cuadradoAlto);
-        mostrarPosicion(posicionX);
-        anchuraBordesRectangulo = posicionX - 20;
-        verdeX = ratonX;
-        //Dibujar verde
-        //ctx.fillStyle="#95A18E";
-        //ctx.fillRect(posicionX, reglaY  - cuadradoAlto /4 + 4,3,15);
-        ctx.fillStyle="rgba(0,0,255,0.5)";
-        
-        ctx.fillRect(reglaX, reglaY,posicionX - 30,reglaAlto);
-        
-        
-        
-        if((posicionX < reglaX) || (posicionX > reglaX + reglaAncho)) {
-            moverCuadrado="false";
-            arrastrando="false";
-            
-            
-        } 
-            }
-             
-    }
-        
-        function principio() {
-             ctx.clearRect(0, 0, lienzo.width, lienzo.height);
-            prepararCanvas();
-            ctx.beginPath();
-        ctx.fillStyle="#BAB8B8";
-        ctx.fillRect(reglaX, reglaY + 100  - cuadradoAlto /4,cuadradoAncho,cuadradoAlto);
-        mostrarPosicion(reglaX);
-        anchuraBordesRectangulo = 20;
-        
-        }
-        
-        function roundedRect(x,y,width,height,radius){
-   ctx.beginPath();
-   ctx.moveTo(x,y+radius);
-   ctx.lineTo(x,y+height-radius);
-   ctx.quadraticCurveTo(x,y+height,x+radius,y+height);
-   ctx.lineTo(x+width-radius,y+height);
-   ctx.quadraticCurveTo(x+width,y+height,x+width,y+height-radius);
-   ctx.lineTo(x+width,y+radius);
-   ctx.quadraticCurveTo(x+width,y,x+width-radius,y);
-   ctx.lineTo(x+radius,y);
-   ctx.quadraticCurveTo(x,y,x,y+radius);
-   ctx.stroke();
 
-   
-}
-        
-        
-       function prepararCanvas() {
-           
-           //Dibujar el rectángulo cuyos bordes se cambian
-                //roundedRect(500, reglaY + 100,anchuraBordesRectangulo,300,30);
-      
-           
-           
-           
-            //Dibujar el spiner bar con el valor de su posición
-        
-         ctx.beginPath();
-            
-        ctx.fillStyle="#FF0000";
-        ctx.fillRect(reglaX, reglaY + 100,reglaAncho,reglaAlto / 4);
-        
-        
-        
-        
-        
-        //Dibujar el rectángulo que actúa como regla
-        ctx.beginPath();
-            
-        ctx.fillStyle="#FF0000";
-        ctx.fillRect(reglaX, reglaY,reglaAncho,reglaAlto);
-        
-        var reglaCont= 0;
-        for(i=reglaX;i<reglaAncho + 40;i++){
-            
-            if(reglaCont==10){
-                reglaCont=0;
-                
-                dibujarLinea(i,reglaY,i,reglaY + reglaAlto);
-                ctx.fillStyle = "blue";
-                ctx.font = "bold 5px Arial";
-                ctx.fillText(i, i, reglaY + reglaAlto + 40);
-                lineaElegidaX = i
-                lineaElegidaY = reglaY;
-                reglaElegidaAncho = reglaY;
-                lineaElegidaAlto = reglaAlto + 20;
-                
-              
-            }
-            reglaCont++;
-        }
+function dibujarSlider(x,y,altura,anchura, color) {
+   // alert("Entrado en dibujarSlider()");
+   ctx.strokeRect(x,y,anchura,altura);
+   if(color == "rojo"){
+       ctx.strokeRect(x,y - (rectangulosReglaAltura / 2 - 2),rectangulosReglaAnchura,rectangulosReglaAltura);
+       rectanguloReglaRojoX = x;
+       rectanguloReglaRojoY = y - (rectangulosReglaAltura / 2 - 2);
+      // alert(rectanguloReglaRojoY);
+   }
+   else if(color="verde"){
+       ctx.strokeRect(x,y - (rectangulosReglaAltura / 2 - 2),rectangulosReglaAnchura,rectangulosReglaAltura);
+       rectanguloReglaVerdeX = x;
+       rectanguloReglaVerdeY = y - (rectangulosReglaAltura / 2 - 2);
+   }
+   else if(color="azul"){
+       ctx.strokeRect(x,y - (rectangulosReglaAltura / 2 - 2),rectangulosReglaAnchura,rectangulosReglaAltura);
+       rectanguloReglaAzulX = x;
+       rectanguloReglaAzulY = y - (rectangulosReglaAltura / 2 - 2);
        
-       }
-        
-        
-        lienzo.onmouseup=function(){
-            arrastrando = "false";
-            moverCuadrado = "false";
-        };
-        
-        
-        
-        
-        lienzo.onmousedown = function (pulsar){
-            ratonX = pulsar.pageX -this.offsetLeft;
-            ratonY = pulsar.pageY -this.offsetTop;
-            arrastrando= "true";
-            if(arrastrando==="true"){
-                
-               if((ratonX > reglaX) && (ratonX < reglaX + reglaAncho)){
-                
-                if((ratonY > reglaY + 100) && (ratonY < reglaY + 100 + reglaAlto)){
-                moverCuadrado = "true";
-                ctx.clearRect(0, 0, lienzo.width, lienzo.height);
-                prepararCanvas();
-                mostrarPosicion(ratonX);
-              // dibujarCuadradoMoviendo();
-                }
-            } 
-            }
-            
-            
-        }
-        
-        
-        lienzo.addEventListener('mousemove', function(evt) {
-            var mousePos = getMousePos(lienzo, evt);
-            
-            if(arrastrando === "true"){
-                if(moverCuadrado==="true"){
-                dibujarCuadradoMoviendo(mousePos.x);
-            }
-                
-            }
-            
-            
-      
-    }, false);
-        }			
+   }
+}
 
-     
+function dibujarCuadradoPrevisualizarColor() {
+     ctx.fillStyle = "rgb(" + colorRojo + "," + colorVerde + "," + colorAzul + ")";
+    ctx.fillRect(cuadradoPrevisualizarColorX,cuadradoPrevisualizarColorY,cuadradoPrevisualizarColorAnchura, cuadradoPrevisualizarColorAltura);
+   
+   // ctx.fillStyle = "rgb(255, 255, 255)";
+}
+
+window.onload = function() {
+    alert("Entra en onload");
+    canvas = document.getElementById("zona");   
+	canvas.width=CANVAS_ANCHURA;
+	canvas.height=CANVAS_ALTURA;
+	ctx = canvas.getContext("2d"); 
+  dibujarSlider(slidersPosicionX,sliderRojoY,slidersAltura,slidersAnchura,"rojo");
+  dibujarSlider(slidersPosicionX,sliderAzulY,slidersAltura,slidersAnchura,"verde");
+  dibujarSlider(slidersPosicionX,sliderVerdeY,slidersAltura,slidersAnchura,"azul");
+  dibujarCuadradoPrevisualizarColor();
+  
+  
+  
+  
+        canvas.addEventListener('mousemove', function(evt) {
+            ctx.clearRect(lblPosicionX - 20,lblPosicionXY - 30,500,500);
+        var mousePos = getMousePos(canvas, evt);
+        
+       // var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
+        ctx.font = "30px Arial";
+        
+        ctx.fillText("Posición X: " + mousePos.x,lblPosicionX,lblPosicionXY);
+        ctx.fillText("Posición Y: " + mousePos.y,lblPosicionX,lblPosicionYY);
+        ctx.fillText("Rojo: " + colorRojo,lblPosicionX,lblPosicionYY + 100);
+        ctx.fillText("Azul: " + colorAzul,lblPosicionX,lblPosicionYY + 200);
+        ctx.fillText("Verde: " + colorVerde,lblPosicionX,lblPosicionYY + 300);
+      }, false);
+      
+      
+      
+      
+    canvas.addEventListener("mouseup", function(evt) {
+    clicRojo = 0;
+    clicAzul = 0;
+    clicVerde = 0;
+    //cvs.removeEventListener('mousemove',mouseMoveHandler,false);
+});
+
+canvas.addEventListener("mousedown", function(evt) {
+     var mousePos = getMousePos(canvas, evt);
+   // alert("Entrando en mousedown");
+    if(parseInt(mousePos.x) >= parseInt(rectanguloReglaRojoX) && parseInt(mousePos.x) < parseInt(rectanguloReglaRojoX) + parseInt(rectangulosReglaAnchura) && parseInt(mousePos.y) > parseInt(rectanguloReglaRojoY) && parseInt(mousePos.y) < parseInt(rectanguloReglaRojoY) + parseInt(rectangulosReglaAltura)) {
+        alert("Has hecho clic en el rojo");
+        eliminarSlider("rojo");
+        
+    }
+    //cvs.removeEventListener('mousemove',mouseMoveHandler,false);
+});
+
+  
+};
+   
+    
+
+
+
+
+
+function getMousePos(canvas, evt) {
+   // alert("Entra en getMousePos");
+        var rect = canvas.getBoundingClientRect();
+        return {
+          x: evt.clientX - rect.left,
+          y: evt.clientY - rect.top
+        };
+      }
+
+
+function eliminarSlider(color) {
+    if(color == "rojo") {
+        alert("Ha entrado en eliminar");
+        ctx.clearRect(sliderRojoX - 20,sliderRojoY - 30,500,400);
+    }
+}
+
+
+
+
+
 
 </script>
 </head>
 <body> 
 <br>
-	<canvas id="zona">
+	<canvas width="1920" height="1080" id="zona">
 		Su navegador no soporta la etiqueta canvas
 	</canvas>
 <br>
-<div class="wrapper">
-   
-    <input id="volume" type=range min=0 max=100 value=50 >
-</div>
-
 <p id="posX"></p>
 <p id="posY"></p>
 <br /> 
