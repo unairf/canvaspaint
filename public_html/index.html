@@ -176,8 +176,9 @@ function getMousePos(canvas, evt) {
 
 function eliminarSlider(color) {
     if(color == "rojo") {
-        alert("Ha entrado en eliminar");
-        ctx.clearRect(sliderRojoX - 20,sliderRojoY - 30,500,400);
+      //  alert("Ha entrado en eliminar");
+        ctx.clearRect(slidersPosicionX - 20,sliderRojoY - 30,slidersAnchura + 50,50);
+      //  dibujarSlider(slidersPosicionX,sliderRojoY,slidersAltura,slidersAnchura,"");
     }
 }
 
