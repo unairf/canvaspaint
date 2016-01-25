@@ -45,7 +45,7 @@ var CANVAS_ALTURA = 700;
 var sliderRojoY = 50;
 var sliderAzulY = 90;
 var sliderVerdeY = 130;
-var slidersAnchura = 200;
+var slidersAnchura = 250;
 var slidersAltura = 5;
 var slidersPosicionX = 50;
 var rectanguloReglaRojoX = 0;
@@ -80,23 +80,32 @@ var clicVerde = 0;
 function dibujarSlider(x,y,altura,anchura, color) {
    // alert("Entrado en dibujarSlider()");
    ctx.strokeRect(x,y,anchura,altura);
-   if(color == "rojo"){
+
+}
+
+function dibujarRegla(x,y,altura,anchura,color) {
+       if(color == "rojo"){
+            
        ctx.strokeRect(x,y - (rectangulosReglaAltura / 2 - 2),rectangulosReglaAnchura,rectangulosReglaAltura);
        rectanguloReglaRojoX = x;
        rectanguloReglaRojoY = y - (rectangulosReglaAltura / 2 - 2);
       // alert(rectanguloReglaRojoY);
    }
-   else if(color="verde"){
+   else if(color=="verde"){
+       
        ctx.strokeRect(x,y - (rectangulosReglaAltura / 2 - 2),rectangulosReglaAnchura,rectangulosReglaAltura);
        rectanguloReglaVerdeX = x;
        rectanguloReglaVerdeY = y - (rectangulosReglaAltura / 2 - 2);
    }
-   else if(color="azul"){
+   else if(color=="azul"){
+      
        ctx.strokeRect(x,y - (rectangulosReglaAltura / 2 - 2),rectangulosReglaAnchura,rectangulosReglaAltura);
        rectanguloReglaAzulX = x;
        rectanguloReglaAzulY = y - (rectangulosReglaAltura / 2 - 2);
        
    }
+  //   alert(rectanguloReglaRojoX + " " + rectanguloReglaAzulX);
+  
 }
 
 function dibujarCuadradoPrevisualizarColor() {
@@ -113,8 +122,11 @@ window.onload = function() {
 	canvas.height=CANVAS_ALTURA;
 	ctx = canvas.getContext("2d"); 
   dibujarSlider(slidersPosicionX,sliderRojoY,slidersAltura,slidersAnchura,"rojo");
-  dibujarSlider(slidersPosicionX,sliderAzulY,slidersAltura,slidersAnchura,"verde");
-  dibujarSlider(slidersPosicionX,sliderVerdeY,slidersAltura,slidersAnchura,"azul");
+  dibujarRegla(slidersPosicionX,sliderRojoY,slidersAltura,slidersAnchura,"rojo");
+  dibujarSlider(slidersPosicionX,sliderVerdeY,slidersAltura,slidersAnchura,"verde");
+  dibujarRegla(slidersPosicionX,sliderVerdeY,slidersAltura,slidersAnchura,"verde");
+  dibujarSlider(slidersPosicionX,sliderAzulY,slidersAltura,slidersAnchura,"azul");
+  dibujarRegla(slidersPosicionX,sliderAzulY,slidersAltura,slidersAnchura,"azul");
   dibujarCuadradoPrevisualizarColor();
   
   
@@ -132,6 +144,56 @@ window.onload = function() {
         ctx.fillText("Rojo: " + colorRojo,lblPosicionX,lblPosicionYY + 100);
         ctx.fillText("Azul: " + colorAzul,lblPosicionX,lblPosicionYY + 200);
         ctx.fillText("Verde: " + colorVerde,lblPosicionX,lblPosicionYY + 300);
+        
+        
+        //Mover la regla si la variable clicXXXX vale 1
+        
+        var mousePos = getMousePos(canvas, evt);
+   // alert("Entrando en mousedown");
+   if(clicRojo == 1){
+        //var clicRojo = 1;
+       // alert("Has hecho clic en el rojo");
+       if(parseInt(mousePos.x) > parseInt(slidersPosicionX) + parseInt(slidersAnchura)){
+           eliminarSlider("rojo");
+        dibujarSlider(slidersPosicionX,sliderRojoY,slidersAltura,slidersAnchura,"rojo");
+        dibujarRegla(parseInt(slidersPosicionX) + parseInt(slidersAnchura),sliderRojoY,slidersAltura,slidersAnchura,"rojo");
+        colorRojo = parseInt(slidersPosicionX) + parseInt(slidersAnchura) - 50;
+       } else if(parseInt(mousePos.x) < parseInt(slidersPosicionX)){
+           eliminarSlider("rojo");
+        dibujarSlider(slidersPosicionX,sliderRojoY,slidersAltura,slidersAnchura,"rojo");
+        dibujarRegla(parseInt(slidersPosicionX),sliderRojoY,slidersAltura,slidersAnchura,"rojo");
+        colorRojo = parseInt(slidersPosicionX) - 50;
+       } else {
+        eliminarSlider("rojo");
+        dibujarSlider(slidersPosicionX,sliderRojoY,slidersAltura,slidersAnchura,"rojo");
+        dibujarRegla(mousePos.x,sliderRojoY,slidersAltura,slidersAnchura,"rojo");
+        colorRojo = parseInt(mousePos.x) - 50;
+    }
+    } else if(clicAzul == 1){
+        
+        if(parseInt(mousePos.x) > parseInt(slidersPosicionX) + parseInt(slidersAnchura)){
+           eliminarSlider("azul");
+        dibujarSlider(slidersPosicionX,sliderRojoY,slidersAltura,slidersAnchura,"azul");
+        dibujarRegla(parseInt(slidersPosicionX) + parseInt(slidersAnchura),sliderAzulY,slidersAltura,slidersAnchura,"azul");
+        colorAzul = parseInt(slidersPosicionX) + parseInt(slidersAnchura) - 50;
+       } else if(parseInt(mousePos.x) < parseInt(slidersPosicionX)){
+           eliminarSlider("azul");
+        dibujarSlider(slidersPosicionX,sliderAzulY,slidersAltura,slidersAnchura,"azul");
+        dibujarRegla(parseInt(slidersPosicionX),sliderAzulY,slidersAltura,slidersAnchura,"azul");
+        colorAzul = parseInt(slidersPosicionX) - 50;
+       } else {
+        eliminarSlider("azul");
+        dibujarSlider(slidersPosicionX,sliderAzulY,slidersAltura,slidersAnchura,"azul");
+        dibujarRegla(mousePos.x,sliderAzulY,slidersAltura,slidersAnchura,"azul");
+        colorAzul = parseInt(mousePos.x) - 50;
+        
+        
+    }
+        
+    }
+    
+        
+        
       }, false);
       
       
@@ -145,12 +207,27 @@ window.onload = function() {
 });
 
 canvas.addEventListener("mousedown", function(evt) {
+   
      var mousePos = getMousePos(canvas, evt);
-   // alert("Entrando en mousedown");
-    if(parseInt(mousePos.x) >= parseInt(rectanguloReglaRojoX) && parseInt(mousePos.x) < parseInt(rectanguloReglaRojoX) + parseInt(rectangulosReglaAnchura) && parseInt(mousePos.y) > parseInt(rectanguloReglaRojoY) && parseInt(mousePos.y) < parseInt(rectanguloReglaRojoY) + parseInt(rectangulosReglaAltura)) {
-        alert("Has hecho clic en el rojo");
-        eliminarSlider("rojo");
+    // alert("Los valores del rectangulo rojo son " + rectanguloReglaRojoX + " , " + rectanguloReglaRojoY + ".X tiene que ser mayor que " + rectanguloReglaAzulX + " y menor que " + parseInt(rectanguloReglaAzulX) + parseInt(rectangulosReglaAnchura));
+   // alert("Azul: " + rectanguloReglaAzulX);
+    if(parseInt(mousePos.x) >= parseInt(rectanguloReglaRojoX) &&
+            parseInt(mousePos.x) < parseInt(rectanguloReglaRojoX) + parseInt(rectangulosReglaAnchura) &&
+            parseInt(mousePos.y) > parseInt(rectanguloReglaRojoY) &&
+            parseInt(mousePos.y) < parseInt(rectanguloReglaRojoY) + parseInt(rectangulosReglaAltura)) {
+        clicRojo = 1;
+       // alert("Has hecho clic en el rojo");
+      //  eliminarSlider("rojo");
+        //dibujarSlider(slidersPosicionX,sliderRojoY,slidersAltura,slidersAnchura,"rojo");
+        //dibujarRegla(mousePos.x,sliderRojoY,slidersAltura,slidersAnchura,"rojo");
         
+        
+    } else if(parseInt(mousePos.x) >= parseInt(rectanguloReglaAzulX) &&
+            parseInt(mousePos.x) < parseInt(rectanguloReglaAzulX) + parseInt(rectangulosReglaAnchura) &&
+            parseInt(mousePos.y) > parseInt(rectanguloReglaAzulY) &&
+            parseInt(mousePos.y) < parseInt(rectanguloReglaAzulY) + parseInt(rectangulosReglaAltura)) {
+    //  alert("Ahora clicAzul vale 1");
+            clicAzul = 1;
     }
     //cvs.removeEventListener('mousemove',mouseMoveHandler,false);
 });
@@ -179,6 +256,8 @@ function eliminarSlider(color) {
       //  alert("Ha entrado en eliminar");
         ctx.clearRect(slidersPosicionX - 20,sliderRojoY - 30,slidersAnchura + 50,50);
       //  dibujarSlider(slidersPosicionX,sliderRojoY,slidersAltura,slidersAnchura,"");
+    } else if(color == "azul"){
+         ctx.clearRect(slidersPosicionX - 20,sliderAzulY - 30,slidersAnchura + 50,50);
     }
 }
 
